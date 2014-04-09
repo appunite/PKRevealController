@@ -1163,14 +1163,17 @@ NSString * const PKRevealControllerRecognizesResetTapOnFrontViewKey = @"PKReveal
                           options:(UIViewAnimationOptions)options
                        completion:(PKDefaultCompletionHandler)completion
 {
-    [UIView animateWithDuration:duration delay:0.0f options:options animations:^
-    {
-        self.frontViewContainer.frame = frame;
+    if (animated) {
+        [UIView animateWithDuration:duration delay:0.0f options:options animations:^{
+            self.frontViewContainer.frame = frame;
+        } completion:^(BOOL finished) {
+            safelyExecuteCompletionBlockOnMainThread(completion, finished);
+        }];
     }
-    completion:^(BOOL finished)
-    {
-        safelyExecuteCompletionBlockOnMainThread(completion, finished);
-    }];
+    
+    else {
+        safelyExecuteCompletionBlockOnMainThread(completion, YES);
+    }
 }
 
 #pragma mark - Helpers (Gestures)
